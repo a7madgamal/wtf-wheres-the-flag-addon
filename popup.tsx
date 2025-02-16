@@ -1,24 +1,48 @@
-import { useState } from "react"
+import React, { useState } from "react"
 
 function IndexPopup() {
-  const [data, setData] = useState("")
+  const [isEnabled, setIsEnabled] = useState(true)
+
+  const toggleExtension = () => {
+    setIsEnabled(!isEnabled)
+    // TODO: Implement actual extension toggle logic
+  }
 
   return (
     <div
       style={{
-        padding: 16
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        padding: 16,
+        width: "250px",
+        textAlign: "center"
       }}>
-      <h2>
-        Welcome to your{" "}
-        <a href="https://www.plasmo.com" target="_blank">
-          Plasmo
-        </a>{" "}
-        Extension!
-      </h2>
-      <input onChange={(e) => setData(e.target.value)} value={data} />
-      <a href="https://docs.plasmo.com" target="_blank">
-        View Docs
-      </a>
+      <h2>Flags for LinkedIn</h2>
+      <p>Fix broken flag emojis automatically</p>
+
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          marginTop: 10
+        }}>
+        <span style={{ marginRight: 10 }}>
+          Extension: {isEnabled ? "Enabled" : "Disabled"}
+        </span>
+        <button
+          onClick={toggleExtension}
+          style={{
+            backgroundColor: isEnabled ? "#4CAF50" : "#F44336",
+            color: "white",
+            border: "none",
+            padding: "5px 10px",
+            borderRadius: 4,
+            cursor: "pointer"
+          }}>
+          {isEnabled ? "Disable" : "Enable"}
+        </button>
+      </div>
     </div>
   )
 }
