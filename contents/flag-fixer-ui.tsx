@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import {replaceFlagEmoji} from "~/contents/unicode";
+import { createFlagElement, replaceFlagEmoji, isValidFlagEmoji } from "~/contents/unicode";
 import { debounce } from "~helpers/debounce";
 
 const observerConfig: MutationObserverInit = {
@@ -14,13 +14,45 @@ function replaceTextNodesRecursively(node: Node): boolean {
 
   if (node.nodeType === Node.TEXT_NODE) {
     const text = node.textContent || "";
-    const fixedText = replaceFlagEmoji(text);
-    
-    if (text !== fixedText) {
-      // Only replace if the flag code actually changed something
-      alert(`Replacing text: "${text}" -> "${fixedText}"`);
-      node.textContent = fixedText;
-      flagFound = true;
+    const regionIndicatorRegex = /[\u{1F1E6}-\u{1F1FF}]{2}/gu;
+    const matches = text.match(regionIndicatorRegex) || [];
+
+    if (matches.length > 0) {
+      // Create a fragment to replace the text node
+      const fragment = document.createDocumentFragment();
+      
+      // Split the text and replace flag emojis
+      let lastIndex = 0;
+      matches.forEach(match => {
+        const matchIndex = text.indexOf(match, lastIndex);
+        
+        // Add text before the match
+        if (matchIndex > lastIndex) {
+          const textBefore = text.slice(lastIndex, matchIndex);
+          fragment.appendChild(document.createTextNode(textBefore));
+        }
+        
+        // Add flag element for the match
+        if (isValidFlagEmoji(match)) {
+          fragment.appendChild(createFlagElement(match));
+        } else {
+          fragment.appendChild(document.createTextNode(match));
+        }
+        
+        lastIndex = matchIndex + match.length;
+      });
+
+      // Add any remaining text
+      if (lastIndex < text.length) {
+        fragment.appendChild(document.createTextNode(text.slice(lastIndex)));
+      }
+
+      // Replace the original text node with the fragment
+      const parentNode = node.parentNode;
+      if (parentNode) {
+        parentNode.replaceChild(fragment, node);
+        flagFound = true;
+      }
     }
   } else if (node.nodeType === Node.ELEMENT_NODE) {
     // Check child nodes and accumulate flag findings
@@ -35,8 +67,6 @@ function replaceTextNodesRecursively(node: Node): boolean {
 }
 
 function searchAndReplaceFlags(): boolean {
-  alert("🚩 Searching for flags in the entire page");
-  
   // Start from the body and recursively replace text nodes
   const flagsFound = replaceTextNodesRecursively(document.body);
   
@@ -44,24 +74,11 @@ function searchAndReplaceFlags(): boolean {
 }
 
 function processMutations(mutations: MutationRecord[]): void {
-  alert(`🔍 Processing ${mutations.length} mutations`);
-
-  mutations.forEach((mutation, index) => {
-    alert(`Mutation ${index + 1} type: ${mutation.type}`);
-
+  mutations.forEach((mutation) => {
     if (mutation.type === "characterData") {
       const target = mutation.target;
       if (target.nodeType === Node.TEXT_NODE) {
-        const text = target.textContent || "";
-        const fixedText = replaceFlagEmoji(text);
-
-        alert(`Original text: "${text}"`);
-        alert(`Fixed text:    "${fixedText}"`);
-
-        if (text !== fixedText) {
-          alert("🚩 Fixing flag emoji");
-          target.textContent = fixedText;
-        }
+        replaceTextNodesRecursively(target);
       }
     }
   });
@@ -69,8 +86,6 @@ function processMutations(mutations: MutationRecord[]): void {
 
 const FlagFixer: React.FC = () => {
   useEffect(() => {
-    alert('Initializing Flag Fixer');
-    
     // First, do an initial search and replace across the entire page
     const flagsFound = searchAndReplaceFlags();
     
@@ -81,7 +96,6 @@ const FlagFixer: React.FC = () => {
 
       // Start observing after a short delay to prevent initial page load overhead
       const timeoutId = setTimeout(() => {
-        alert("🕵️ Starting DOM observation");
         mutationObserver.observe(document.body, observerConfig);
       }, 500);
 

@@ -42,7 +42,15 @@
     ],
     "action": {
       "default_title": "Flags Fixer"
-    }
+    },
+    "web_accessible_resources": [
+      {
+        "resources": [
+          "assets/flags/4x3/*.svg"
+        ],
+        "matches": ["<all_urls>"]
+      }
+    ]
   },
   "plasmo": {
     "contents": [
@@ -56,5 +64,8 @@
     "background": {
       "entry": "./background.ts"
     }
-  }
+  },
+  "assets": [
+    "assets/flags/4x3/**/*.svg"
+  ]
 }

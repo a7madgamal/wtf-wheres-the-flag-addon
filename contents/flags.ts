@@ -1,4 +1,4 @@
-const FLAGS = {
+export const FLAGS = {
   "🇦🇫": {
     name: "Afghanistan",
     image: "af.svg"
