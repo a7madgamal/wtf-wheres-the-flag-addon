@@ -6,6 +6,18 @@ module.exports = {
     // Prevent usage of 'any' type
     "@typescript-eslint/no-explicit-any": "error",
 
+    // Prevent unused variables with more aggressive settings
+    "@typescript-eslint/no-unused-vars": [
+      "error",
+      {
+        vars: "all",
+        args: "after-used",
+        ignoreRestSiblings: false,
+        argsIgnorePattern: "^_",
+        destructuredArrayIgnorePattern: "^_",
+      },
+    ],
+
     // Optional: Additional strict type checking rules
     "@typescript-eslint/explicit-function-return-type": "error",
     "@typescript-eslint/no-unsafe-assignment": "error",
@@ -17,8 +29,8 @@ module.exports = {
       "error",
       {
         arrowParameter: true,
-        variableDeclaration: true
-      }
-    ]
-  }
-}
+        variableDeclaration: true,
+      },
+    ],
+  },
+};

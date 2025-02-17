@@ -1,8 +1,8 @@
 {
-  "name": "flags-for-linked-in",
-  "displayName": "Flags for linked in",
+  "name": "flags-for-linkedin",
+  "displayName": "Flags Fixer",
   "version": "0.0.1",
-  "description": "Fix flags",
+  "description": "Fix flag emojis on Windows",
   "author": "Ahmed Hassanein",
   "scripts": {
     "dev": "plasmo dev",
@@ -29,8 +29,32 @@
     "typescript": "5.3.3"
   },
   "manifest": {
+    "manifest_version": 3,
+    "name": "Flags Fixer",
+    "version": "0.0.1",
+    "description": "Fix flag emojis on Windows",
+    "permissions": [
+      "activeTab",
+      "scripting"
+    ],
     "host_permissions": [
-      "https://*/*"
-    ]
+      "<all_urls>"
+    ],
+    "action": {
+      "default_title": "Flags Fixer"
+    }
+  },
+  "plasmo": {
+    "contents": [
+      {
+        "matches": [
+          "<all_urls>"
+        ],
+        "entry": "./contents/flag-fixer-ui.tsx"
+      }
+    ],
+    "background": {
+      "entry": "./background.ts"
+    }
   }
 }
