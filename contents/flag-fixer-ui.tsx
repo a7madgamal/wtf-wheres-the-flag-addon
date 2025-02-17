@@ -1,5 +1,6 @@
-import React, {useState, useEffect} from "react";
+import React, { useEffect } from "react";
 import {replaceFlagEmoji} from "~/contents/unicode";
+import { debounce } from "~helpers/debounce";
 
 const observerConfig: MutationObserverInit = {
   subtree: true,
@@ -8,31 +9,45 @@ const observerConfig: MutationObserverInit = {
   characterDataOldValue: true,
 };
 
-function debounce<F extends (...args: Array<unknown>) => unknown>(
-  func: F,
-  delay: number
-): (...args: Parameters<F>) => void {
-  let timeoutId: ReturnType<typeof setTimeout> | null = null;
+function replaceTextNodesRecursively(node: Node): boolean {
+  let flagFound = false;
 
-  return (...args: Parameters<F>) => {
-    if (timeoutId) {
-      clearTimeout(timeoutId);
-      console.log("🕰️ Debounce: Previous timeout cleared");
+  if (node.nodeType === Node.TEXT_NODE) {
+    const text = node.textContent || "";
+    const fixedText = replaceFlagEmoji(text);
+    
+    if (text !== fixedText) {
+      // Only replace if the flag code actually changed something
+      alert(`Replacing text: "${text}" -> "${fixedText}"`);
+      node.textContent = fixedText;
+      flagFound = true;
     }
+  } else if (node.nodeType === Node.ELEMENT_NODE) {
+    // Check child nodes and accumulate flag findings
+    node.childNodes.forEach(childNode => {
+      if (replaceTextNodesRecursively(childNode)) {
+        flagFound = true;
+      }
+    });
+  }
 
-    timeoutId = setTimeout(() => {
-      console.log("🚀 Debounce: Processing mutations");
-      func(...args);
-      timeoutId = null;
-    }, delay);
-  };
+  return flagFound;
+}
+
+function searchAndReplaceFlags(): boolean {
+  alert("🚩 Searching for flags in the entire page");
+  
+  // Start from the body and recursively replace text nodes
+  const flagsFound = replaceTextNodesRecursively(document.body);
+  
+  return flagsFound;
 }
 
 function processMutations(mutations: MutationRecord[]): void {
-  console.log(`🔍 Processing ${mutations.length} mutations`);
+  alert(`🔍 Processing ${mutations.length} mutations`);
 
   mutations.forEach((mutation, index) => {
-    console.log(`Mutation ${index + 1} type: ${mutation.type}`);
+    alert(`Mutation ${index + 1} type: ${mutation.type}`);
 
     if (mutation.type === "characterData") {
       const target = mutation.target;
@@ -40,11 +55,11 @@ function processMutations(mutations: MutationRecord[]): void {
         const text = target.textContent || "";
         const fixedText = replaceFlagEmoji(text);
 
-        console.log(`Original text: "${text}"`);
-        console.log(`Fixed text:    "${fixedText}"`);
+        alert(`Original text: "${text}"`);
+        alert(`Fixed text:    "${fixedText}"`);
 
         if (text !== fixedText) {
-          console.log("🚩 Fixing flag emoji");
+          alert("🚩 Fixing flag emoji");
           target.textContent = fixedText;
         }
       }
@@ -52,33 +67,33 @@ function processMutations(mutations: MutationRecord[]): void {
   });
 }
 
-const FlagFixerButton: React.FC = () => {
-  const [observer, setObserver] = useState<MutationObserver | null>(null);
-
+const FlagFixer: React.FC = () => {
   useEffect(() => {
-    console.log("🌟 Initializing Flag Fixer");
-    const debouncedHandler = debounce(processMutations, 2000);
-    const mutationObserver = new MutationObserver(debouncedHandler);
+    alert('Initializing Flag Fixer');
+    
+    // First, do an initial search and replace across the entire page
+    const flagsFound = searchAndReplaceFlags();
+    
+    // Only set up mutation observer if flags were found
+    if (flagsFound) {
+      const debouncedHandler = debounce(processMutations, 2000);
+      const mutationObserver = new MutationObserver(debouncedHandler);
 
-    // Start observing after a short delay to prevent initial page load overhead
-    setTimeout(() => {
-      console.log("🕵️ Starting DOM observation");
-      mutationObserver.observe(document.body, observerConfig);
-    }, 500);
+      // Start observing after a short delay to prevent initial page load overhead
+      const timeoutId = setTimeout(() => {
+        alert("🕵️ Starting DOM observation");
+        mutationObserver.observe(document.body, observerConfig);
+      }, 500);
 
-    setObserver(mutationObserver);
-
-    // Cleanup function
-    return () => {
-      // Use the observer from state to disconnect
-      if (observer) {
-        observer.disconnect();
-      }
-    };
+      // Cleanup function
+      return () => {
+        clearTimeout(timeoutId);
+        mutationObserver.disconnect();
+      };
+    }
   }, []);
 
-  // Removed toggle functionality, always enabled
-  return null; // No UI needed
+  return null;
 };
 
-export default FlagFixerButton;
+export default FlagFixer;
