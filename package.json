@@ -3,6 +3,18 @@
   "displayName": "WTF: Where's the flag?",
   "version": "0.0.1",
   "description": "Fix flag emojis on Windows 🌍",
+  "keywords": [
+    "emoji",
+    "flags",
+    "windows",
+    "chrome-extension"
+  ],
+  "homepage": "https://github.com/ahmedhassanein/wheres-the-flag",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ahmedhassanein/wheres-the-flag.git"
+  },
+  "license": "MIT",
   "author": "Ahmed Hassanein",
   "scripts": {
     "dev": "plasmo dev",
@@ -32,15 +44,11 @@
     "manifest_version": 3,
     "version": "0.0.1",
     "permissions": [
-      "activeTab",
-      "scripting"
+      "activeTab"
     ],
     "host_permissions": [
       "<all_urls>"
     ],
-    "action": {
-      "default_title": "Flags Fixer"
-    },
     "web_accessible_resources": [
       {
         "resources": [
@@ -66,6 +74,7 @@
     }
   },
   "assets": [
-    "assets/flags/4x3/**/*.svg"
+    "assets/flags/4x3/**/*.svg",
+    "assets/*.png"
   ]
 }

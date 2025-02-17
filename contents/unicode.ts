@@ -40,15 +40,20 @@ export function createFlagElement(emoji: string): HTMLElement {
   const flagInfo = FLAGS[emoji] as unknown as (typeof FLAGS)[keyof typeof FLAGS]
   const flagIcon = document.createElement("span")
 
+  // Set default inline styles to make image relative to font size
+  flagIcon.style.display = "inline-block"
+  // flagIcon.style.verticalAlign = "middle"
+  flagIcon.style.width = "0.98em" // Width relative to font size
+  flagIcon.style.height = "0.75em" // Height relative to font size
+  // flagIcon.style.marginLeft = "0.2em"
+  // flagIcon.style.marginRight = "0.2em"
+  flagIcon.style.backgroundSize = "cover"
+  flagIcon.style.backgroundPosition = "center"
+
   if (!countryCode || !flagInfo) {
     console.error("Invalid flag emoji: " + emoji)
-    // throw new Error(`Invalid flag emoji: ${emoji}`)
-    // const neutralFlag = document.createElement("span")
-    // neutralFlag.textContent = "Unkonw flag 🐞"
-    // return neutralFlag
-    flagIcon.textContent = "Unkonwn flag 🐞"
-
-    return
+    flagIcon.textContent = "Unknown flag 🐞"
+    return flagIcon
   }
 
   // Use chrome-extension:// URL for assets, using 4x3 subdirectory
@@ -56,16 +61,9 @@ export function createFlagElement(emoji: string): HTMLElement {
     `assets/flags/4x3/${flagInfo.image}`
   )
 
-  // Set inline styles for flag icon
-  flagIcon.style.display = "inline-block"
-  flagIcon.style.width = "0.4em"
-  flagIcon.style.height = "0.3em"
+  // Set background image instead of img tag for better sizing control
   flagIcon.style.backgroundImage = `url('${flagImageUrl}')`
-  flagIcon.style.backgroundSize = "contain"
-  flagIcon.style.backgroundRepeat = "no-repeat"
-  flagIcon.style.backgroundPosition = "center"
-  flagIcon.style.verticalAlign = "middle"
-  flagIcon.style.margin = "0 0.05em"
+  flagIcon.setAttribute("aria-label", `Flag of ${countryCode}`)
 
   return flagIcon
 }

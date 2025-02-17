@@ -87,24 +87,20 @@ function processMutations(mutations: MutationRecord[]): void {
 
 const FlagFixer: React.FC = () => {
   useEffect(() => {
-    // First, do an initial search and replace across the entire page
-    const flagsFound = searchAndReplaceFlags()
+    searchAndReplaceFlags()
 
-    // Only set up mutation observer if flags were found
-    if (flagsFound) {
-      const debouncedHandler = debounce(processMutations, 2000)
-      const mutationObserver = new MutationObserver(debouncedHandler)
+    const debouncedHandler = debounce(processMutations, 2000)
+    const mutationObserver = new MutationObserver(debouncedHandler)
 
-      // Start observing after a short delay to prevent initial page load overhead
-      const timeoutId = setTimeout(() => {
-        mutationObserver.observe(document.body, observerConfig)
-      }, 500)
+    // Start observing after a short delay to prevent initial page load overhead
+    const timeoutId = setTimeout(() => {
+      mutationObserver.observe(document.body, observerConfig)
+    }, 500)
 
-      // Cleanup function
-      return () => {
-        clearTimeout(timeoutId)
-        mutationObserver.disconnect()
-      }
+    // Cleanup function
+    return () => {
+      clearTimeout(timeoutId)
+      mutationObserver.disconnect()
     }
   }, [])
 
