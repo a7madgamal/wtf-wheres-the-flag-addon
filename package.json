@@ -9,10 +9,10 @@
     "windows",
     "chrome-extension"
   ],
-  "homepage": "https://github.com/ahmedhassanein/wheres-the-flag",
+  "homepage": "https://github.com/a7madgamal/wtf-wheres-the-flag-addon",
   "repository": {
     "type": "git",
-    "url": "https://github.com/ahmedhassanein/wheres-the-flag.git"
+    "url": "https://github.com/a7madgamal/wtf-wheres-the-flag-addon.git"
   },
   "license": "MIT",
   "author": "Ahmed Hassanein",
