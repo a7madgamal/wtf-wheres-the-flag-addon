@@ -1,8 +1,8 @@
 {
-  "name": "flags-for-linkedin",
-  "displayName": "Flags Fixer",
+  "name": "wheres-the-flag",
+  "displayName": "WTF: Where's the flag?",
   "version": "0.0.1",
-  "description": "Fix flag emojis on Windows",
+  "description": "Fix flag emojis on Windows 🌍",
   "author": "Ahmed Hassanein",
   "scripts": {
     "dev": "plasmo dev",
@@ -30,9 +30,7 @@
   },
   "manifest": {
     "manifest_version": 3,
-    "name": "Flags Fixer",
     "version": "0.0.1",
-    "description": "Fix flag emojis on Windows",
     "permissions": [
       "activeTab",
       "scripting"
@@ -48,7 +46,9 @@
         "resources": [
           "assets/flags/4x3/*.svg"
         ],
-        "matches": ["<all_urls>"]
+        "matches": [
+          "<all_urls>"
+        ]
       }
     ]
   },

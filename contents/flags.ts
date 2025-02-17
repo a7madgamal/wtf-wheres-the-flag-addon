@@ -1017,4 +1017,4 @@ export const FLAGS = {
     name: "Zimbabwe",
     image: "zw.svg"
   }
-}
+} as const

@@ -37,17 +37,19 @@ function getFlagCountryCode(emoji: string): string | null {
  */
 export function createFlagElement(emoji: string): HTMLElement {
   const countryCode = getFlagCountryCode(emoji)
+  const flagInfo = FLAGS[emoji] as unknown as (typeof FLAGS)[keyof typeof FLAGS]
+  const flagIcon = document.createElement("span")
 
-  if (!countryCode || !FLAGS[emoji]) {
-    alert("Invalid flag emoji: " + emoji)
-    throw new Error(`Invalid flag emoji: ${emoji}`)
+  if (!countryCode || !flagInfo) {
+    console.error("Invalid flag emoji: " + emoji)
+    // throw new Error(`Invalid flag emoji: ${emoji}`)
     // const neutralFlag = document.createElement("span")
     // neutralFlag.textContent = "Unkonw flag 🐞"
     // return neutralFlag
-  }
+    flagIcon.textContent = "Unkonwn flag 🐞"
 
-  const flagInfo = FLAGS[emoji]
-  const flagIcon = document.createElement("span")
+    return
+  }
 
   // Use chrome-extension:// URL for assets, using 4x3 subdirectory
   const flagImageUrl = chrome.runtime.getURL(
