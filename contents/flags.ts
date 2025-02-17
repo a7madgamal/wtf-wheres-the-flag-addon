@@ -435,10 +435,11 @@ export const FLAGS = {
     name: "Isle of Man",
     image: "im.svg"
   },
-  "🇮🇱": {
-    name: "Israel",
-    image: "il.svg"
-  },
+  // oops :P
+  // "🇮🇱": {
+  //   name: "Israel",
+  //   image: "il.svg"
+  // },
   "🇮🇹": {
     name: "Italy",
     image: "it.svg"
@@ -791,6 +792,11 @@ export const FLAGS = {
     name: "Scotland",
     image: "gb-sct.svg"
   },
+  // todo: add flag for scotland
+  // "": {
+  //   name: "Scotland",
+  //   image: "gb-sct.svg"
+  // },
   "🇸🇳": {
     name: "Senegal",
     image: "sn.svg"
